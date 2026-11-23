@@ -1,317 +1,50 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#111111">
-<title>Message Screen</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111">
+<title>Message Screen - Regia</title>
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f2f2f2;color:#111}
+header{background:#111;color:white;padding:18px;text-align:center;font-weight:bold;letter-spacing:2px}
+.app{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:20px;max-width:1400px;margin:auto}
+.panel{background:white;padding:18px;border-radius:12px;box-shadow:0 3px 15px #0001;height:fit-content}
+h3{margin:15px 0 10px}
+textarea,input[type=text]{width:100%;padding:12px;border:1px solid #ccc;border-radius:7px;font:inherit}
+textarea{height:90px;resize:vertical}
+button{cursor:pointer;border:0;border-radius:7px;padding:11px;font-weight:bold}
+.primary{background:#111;color:white}
+.secondary{background:#eee;color:#111}
+.actions{display:flex;gap:8px;margin-top:10px}
+.actions button{flex:1}
+.colors{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.color{width:34px;height:34px;border:2px solid #ddd;border-radius:50%;padding:0}
+.color.active{outline:3px solid #777;outline-offset:2px}
+input[type=range]{width:100%;margin:12px 0}
+.saved-list{display:flex;flex-direction:column;gap:7px;max-height:220px;overflow:auto;margin-top:10px}
+.saved-item{display:flex;align-items:center;gap:5px;background:#fff7c2;padding:6px;border-radius:5px}
+.saved-text{flex:1;text-align:left;background:transparent;overflow-wrap:anywhere}
+.delete{background:transparent;color:#c00}
+.preview-area{min-height:480px;display:flex;align-items:center;justify-content:center;padding:15px}
+.screen{width:100%;min-height:350px;background:#ed1824;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;overflow:hidden}
+#displayText{font-size:76px;font-weight:900;color:white;line-height:1.1;white-space:pre-wrap;overflow-wrap:anywhere}
+.screen.scrolling{justify-content:flex-start}
+.screen.scrolling #displayText{width:max-content;max-width:none;white-space:nowrap;animation:marquee 15s linear infinite}
+@keyframes marquee{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+.room{background:#f3f5f8;border-radius:9px;padding:12px;margin-top:12px}
+.room-code{font-size:24px;font-weight:bold;text-align:center;letter-spacing:3px;padding:12px}
+.status{font-size:12px;color:#777;margin-top:12px}
+@media(max-width:750px){
+.app{grid-template-columns:1fr;padding:10px}
+.preview-area{min-height:230px;order:-1;padding:5px}
+.screen{min-height:220px}
+#displayText{font-size:min(15vw,76px)}
 }
-
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f2f2;
-  color: #111;
-  min-height: 100vh;
-}
-
-header {
-  background: #111;
-  color: white;
-  padding: 18px;
-  text-align: center;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-
-.app {
-  display: grid;
-  grid-template-columns: 330px 1fr;
-  gap: 25px;
-  padding: 25px;
-  max-width: 1400px;
-  margin: auto;
-}
-
-.panel {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 3px 15px #0001;
-  height: fit-content;
-}
-
-h3 {
-  margin: 15px 0 10px;
-}
-
-textarea {
-  width: 100%;
-  height: 100px;
-  padding: 13px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 17px;
-  resize: vertical;
-  font-family: inherit;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 7px;
-  padding: 11px 14px;
-  font-size: 14px;
-  font-weight: bold;
-  transition: .2s;
-}
-
-button:active {
-  transform: scale(.97);
-}
-
-.primary {
-  background: #111;
-  color: white;
-}
-
-.primary:hover {
-  background: #333;
-}
-
-.secondary {
-  background: #eee;
-  color: #111;
-}
-
-.danger {
-  background: #ffe1e1;
-  color: #d00;
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.actions button {
-  flex: 1;
-}
-
-.colors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 12px 0;
-}
-
-.color {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  border: 2px solid #ddd;
-}
-
-.color.active {
-  outline: 3px solid #777;
-  outline-offset: 2px;
-}
-
-input[type=range] {
-  width: 100%;
-  margin: 12px 0;
-}
-
-.saved-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 280px;
-  overflow-y: auto;
-  margin-top: 10px;
-}
-
-.saved-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: #fff7c2;
-  padding: 7px;
-  border-radius: 5px;
-}
-
-.saved-text {
-  flex: 1;
-  border: none;
-  background: transparent;
-  text-align: left;
-  font-weight: bold;
-  color: #555;
-  overflow-wrap: anywhere;
-  padding: 6px;
-}
-
-.delete {
-  background: transparent;
-  color: #c00;
-  padding: 7px;
-}
-
-/* SCHERMO MESSAGGIO */
-
-.preview-area {
-  min-height: 600px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.screen {
-  position: relative;
-  width: 100%;
-  min-height: 350px;
-  background: #ed1824;
-  border: 5px solid #111;
-  box-shadow: -9px 9px 0 #111;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-  text-align: center;
-  overflow: hidden;
-}
-
-#displayText {
-  font-size: 76px;
-  font-weight: 900;
-  color: white;
-  line-height: 1.1;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-/* PULSANTE ESCI */
-
-#exitFullscreenBtn {
-  display: none;
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 99999;
-  background: white;
-  color: black;
-  padding: 12px 18px;
-  border: 2px solid #111;
-}
-
-/* SCHERMO INTERO */
-
-body.fullscreen-mode {
-  background: black;
-  overflow: hidden;
-}
-
-body.fullscreen-mode header,
-body.fullscreen-mode .panel {
-  display: none;
-}
-
-body.fullscreen-mode .app {
-  display: block;
-  padding: 0;
-  height: 100vh;
-  height: 100dvh;
-  max-width: none;
-}
-
-body.fullscreen-mode .preview-area {
-  padding: 0;
-  height: 100vh;
-  height: 100dvh;
-  min-height: 0;
-}
-
-body.fullscreen-mode .screen {
-  height: 100%;
-  min-height: 0;
-  border: none;
-  box-shadow: none;
-}
-
-body.fullscreen-mode #exitFullscreenBtn {
-  display: block;
-}
-
-/* MOBILE */
-
-@media(max-width: 750px) {
-  .app {
-    grid-template-columns: 1fr;
-    padding: 12px;
-    gap: 15px;
-  }
-
-  .preview-area {
-    min-height: 260px;
-    padding: 10px;
-    order: -1;
-  }
-
-  .screen {
-    min-height: 250px;
-    padding: 20px;
-  }
-
-  #displayText {
-    font-size: min(15vw, 76px);
-  }
-
-  .panel {
-    padding: 16px;
-  }
-}
-
-/* TESTO SCORREVOLE */
-
-.screen.scrolling {
-  justify-content: flex-start;
-  overflow: hidden;
-}
-
-.screen.scrolling #displayText {
-  position: absolute;
-  left: 100%;
-  width: max-content;
-  max-width: none;
-  white-space: nowrap;
-  overflow-wrap: normal;
-  animation: marquee 15s linear infinite;
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(calc(-100% - 100vw));
-  }
-}
-
-.screen.scrolling #displayText:active {
-  animation-play-state: paused;
-}
-
 </style>
 </head>
-
 <body>
 
 <header>MESSAGE SCREEN</header>
@@ -321,384 +54,71 @@ body.fullscreen-mode #exitFullscreenBtn {
 <section class="panel">
 
 <h3>Scrivi il tuo messaggio</h3>
-
-<textarea id="messageInput"
-placeholder="Scrivi qui il tuo messaggio..."></textarea>
+<textarea id="messageInput" placeholder="Scrivi qui il tuo messaggio..."></textarea>
 
 <div class="actions">
-<button class="primary" id="saveBtn">♥ Salva messaggio</button>
+<button class="primary" id="saveBtn">♥ Salva</button>
 <button class="secondary" id="clearBtn">Cancella</button>
 </div>
 
 <h3>Colore dello schermo</h3>
-
-<div class="colors" id="colors">
-
-<button class="color active" data-color="#ed1824"
-style="background:#ed1824" aria-label="Rosso"></button>
-
-<button class="color" data-color="#000000"
-style="background:#000000" aria-label="Nero"></button>
-
-<button class="color" data-color="#1565e8"
-style="background:#1565e8" aria-label="Blu"></button>
-
-<button class="color" data-color="#ffffff"
-style="background:#ffffff" aria-label="Bianco"></button>
-
-<button class="color" data-color="#ffeb3b"
-style="background:#ffeb3b" aria-label="Giallo"></button>
-
-<button class="color" data-color="#8e24aa"
-style="background:#8e24aa" aria-label="Viola"></button>
-
+<div class="colors">
+<button class="color active" data-color="#ed1824" style="background:#ed1824"></button>
+<button class="color" data-color="#000000" style="background:#000"></button>
+<button class="color" data-color="#1565e8" style="background:#1565e8"></button>
+<button class="color" data-color="#ffffff" style="background:#fff"></button>
+<button class="color" data-color="#ffeb3b" style="background:#ffeb3b"></button>
+<button class="color" data-color="#8e24aa" style="background:#8e24aa"></button>
 </div>
 
 <h3>Dimensione testo</h3>
-
-<input type="range" id="fontSize"
-min="25" max="150" value="76">
+<input type="range" id="fontSize" min="25" max="150" value="76">
 
 <h3>Movimento del messaggio</h3>
-
-<label style="display:flex;align-items:center;gap:10px;margin:12px 0">
+<label style="display:flex;gap:8px;align-items:center;margin:12px 0">
 <input type="checkbox" id="scrollToggle">
 <strong>Testo scorrevole LED ↔</strong>
 </label>
 
 <h3>Messaggi salvati</h3>
-
 <div id="savedList" class="saved-list"></div>
 
-<div class="actions">
-<button class="primary" id="showBtn">
-⛶ MOSTRA SULLO SCHERMO
-</button>
+<div class="room">
+<h3 style="margin-top:0">Collega un secondo telefono</h3>
+<p style="font-size:13px">Crea una stanza per condividere la proiezione.</p>
+<button class="primary" id="createRoom" style="width:100%;margin-top:10px">CREA STANZA</button>
+
+<div id="roomInfo" hidden>
+<div class="room-code" id="roomCode"></div>
+<p style="font-size:12px;text-align:center">Codice da inserire sul secondo telefono</p>
+<button class="secondary" id="copyCode" style="width:100%;margin-top:8px">COPIA CODICE</button>
+<button class="primary" id="copyLink" style="width:100%;margin-top:8px">COPIA LINK PROIEZIONE</button>
 </div>
 
-<p style="font-size:12px;color:#888;margin-top:15px">
-I tuoi messaggi sono salvati su questo dispositivo.
-</p>
+<h3>Oppure entra in una stanza</h3>
+<input type="text" id="joinCode" placeholder="Inserisci il codice">
+<button class="secondary" id="joinRoom" style="width:100%;margin-top:8px">COLLEGA</button>
+</div>
 
+<div class="actions">
+<button class="primary" id="showBtn">⛶ MOSTRA SULLO SCHERMO</button>
+</div>
+
+<p class="status" id="status">Inizializzazione...</p>
 </section>
 
 <section class="preview-area">
-
 <div class="screen" id="screen">
-
 <div id="displayText">hello</div>
-
 </div>
-
 </section>
 
 </div>
 
-<button id="exitFullscreenBtn">
-✕ ESCI DALLO SCHERMO
-</button>
-
-<script>
-
-// ELEMENTI
-
-const input = document.getElementById("messageInput");
-const display = document.getElementById("displayText");
-const screen = document.getElementById("screen");
-const fontSize = document.getElementById("fontSize");
-const savedList = document.getElementById("savedList");
-const scrollToggle = document.getElementById("scrollToggle");
-
-// DATI
-
-function loadData(key, fallback) {
-  try {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : fallback;
-  } catch (error) {
-    return fallback;
-  }
-}
-
-let messages = loadData("messageScreenMessages", []);
-let settings = loadData("messageScreenSettings", {});
-
-// SALVATAGGIO IMPOSTAZIONI
-
-function saveSettings() {
-  localStorage.setItem(
-    "messageScreenSettings",
-    JSON.stringify({
-      color: screen.style.backgroundColor,
-      size: fontSize.value,
-      scrolling: scrollToggle.checked
-    })
-  );
-}
-
-// AGGIORNAMENTO MESSAGGIO
-
-function updateMessage() {
-  display.textContent = input.value || "hello";
-
-  localStorage.setItem(
-    "messageScreenCurrent",
-    input.value
-  );
-}
-
-input.addEventListener("input", updateMessage);
-
-// COLORE
-
-document.querySelectorAll(".color").forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    document.querySelectorAll(".color")
-      .forEach(b => b.classList.remove("active"));
-
-    button.classList.add("active");
-
-    screen.style.backgroundColor = button.dataset.color;
-
-    saveSettings();
-
-  });
-
-});
-
-// DIMENSIONE TESTO
-
-fontSize.addEventListener("input", () => {
-
-  display.style.fontSize = fontSize.value + "px";
-
-  saveSettings();
-
-});
-
-// SCORRIMENTO
-
-scrollToggle.addEventListener("change", () => {
-
-  screen.classList.toggle(
-    "scrolling",
-    scrollToggle.checked
-  );
-
-  saveSettings();
-
-});
-
-// SALVA MESSAGGIO
-
-document.getElementById("saveBtn")
-.addEventListener("click", () => {
-
-  const text = input.value.trim();
-
-  if (!text) {
-    alert("Scrivi prima un messaggio!");
-    return;
-  }
-
-  if (messages.includes(text)) {
-    alert("Questo messaggio è già salvato!");
-    return;
-  }
-
-  messages.unshift(text);
-
-  localStorage.setItem(
-    "messageScreenMessages",
-    JSON.stringify(messages)
-  );
-
-  renderMessages();
-
-});
-
-// MOSTRA MESSAGGI SALVATI
-
-function renderMessages() {
-
-  savedList.innerHTML = "";
-
-  if (messages.length === 0) {
-
-    savedList.innerHTML =
-      '<p style="color:#999;font-size:13px">Nessun messaggio salvato.</p>';
-
-    return;
-  }
-
-  messages.forEach((message, index) => {
-
-    const item = document.createElement("div");
-    item.className = "saved-item";
-
-    const select = document.createElement("button");
-    select.className = "saved-text";
-    select.textContent = message;
-
-    select.addEventListener("click", () => {
-
-      input.value = message;
-      updateMessage();
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
-    });
-
-    const remove = document.createElement("button");
-    remove.className = "delete";
-    remove.textContent = "✕";
-    remove.setAttribute("aria-label", "Elimina messaggio");
-
-    remove.addEventListener("click", () => {
-
-      messages.splice(index, 1);
-
-      localStorage.setItem(
-        "messageScreenMessages",
-        JSON.stringify(messages)
-      );
-
-      renderMessages();
-
-    });
-
-    item.appendChild(select);
-    item.appendChild(remove);
-    savedList.appendChild(item);
-
-  });
-
-}
-
-// CANCELLA TESTO
-
-document.getElementById("clearBtn")
-.addEventListener("click", () => {
-
-  input.value = "";
-  updateMessage();
-
-});
-
-// MOSTRA SULLO SCHERMO INTERO
-
-async function showFullscreen() {
-
-  document.body.classList.add("fullscreen-mode");
-
-  try {
-
-    if (!document.fullscreenElement &&
-        document.documentElement.requestFullscreen) {
-
-      await document.documentElement.requestFullscreen();
-
-    }
-
-  } catch (error) {
-
-    console.log("Schermo intero non disponibile:", error);
-
-    // Rimane attiva la modalità a tutto schermo tramite CSS
-
-  }
-
-}
-
-// PULSANTE MOSTRA
-
-document.getElementById("showBtn")
-.addEventListener("click", showFullscreen);
-
-// ESCI DALLO SCHERMO
-
-async function exitFullscreen() {
-
-  document.body.classList.remove("fullscreen-mode");
-
-  try {
-
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
-    }
-
-  } catch (error) {
-
-    console.log("Uscita schermo intero:", error);
-
-  }
-
-}
-
-document.getElementById("exitFullscreenBtn")
-.addEventListener("click", exitFullscreen);
-
-// RILEVA USCITA CON ESC
-
-document.addEventListener("fullscreenchange", () => {
-
-  if (!document.fullscreenElement) {
-    document.body.classList.remove("fullscreen-mode");
-  }
-
-});
-
-// RIPRISTINO DATI
-
-input.value =
-  localStorage.getItem("messageScreenCurrent") || "hello";
-
-display.textContent = input.value;
-
-// RIPRISTINO COLORE
-
-if (settings.color) {
-
-  screen.style.backgroundColor = settings.color;
-
-  document.querySelectorAll(".color").forEach(button => {
-
-    button.classList.toggle(
-      "active",
-      button.dataset.color === settings.color
-    );
-
-  });
-
-}
-
-// RIPRISTINO DIMENSIONE
-
-if (settings.size) {
-  fontSize.value = settings.size;
-}
-
-display.style.fontSize = fontSize.value + "px";
-
-// RIPRISTINO SCORRIMENTO
-
-if (settings.scrolling) {
-
-  scrollToggle.checked = true;
-  screen.classList.add("scrolling");
-
-}
-
-// AVVIO
-
-renderMessages();
-
-</script>
-
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="./firebase-config.js"></script>
+<script src="./app.js"></script>
 </body>
 </html>
