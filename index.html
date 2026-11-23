@@ -1,124 +1,561 @@
 
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111">
-<title>Message Screen - Regia</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f2f2f2;color:#111}
-header{background:#111;color:white;padding:18px;text-align:center;font-weight:bold;letter-spacing:2px}
-.app{display:grid;grid-template-columns:340px 1fr;gap:20px;padding:20px;max-width:1400px;margin:auto}
-.panel{background:white;padding:18px;border-radius:12px;box-shadow:0 3px 15px #0001;height:fit-content}
-h3{margin:15px 0 10px}
-textarea,input[type=text]{width:100%;padding:12px;border:1px solid #ccc;border-radius:7px;font:inherit}
-textarea{height:90px;resize:vertical}
-button{cursor:pointer;border:0;border-radius:7px;padding:11px;font-weight:bold}
-.primary{background:#111;color:white}
-.secondary{background:#eee;color:#111}
-.actions{display:flex;gap:8px;margin-top:10px}
-.actions button{flex:1}
-.colors{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-.color{width:34px;height:34px;border:2px solid #ddd;border-radius:50%;padding:0}
-.color.active{outline:3px solid #777;outline-offset:2px}
-input[type=range]{width:100%;margin:12px 0}
-.saved-list{display:flex;flex-direction:column;gap:7px;max-height:220px;overflow:auto;margin-top:10px}
-.saved-item{display:flex;align-items:center;gap:5px;background:#fff7c2;padding:6px;border-radius:5px}
-.saved-text{flex:1;text-align:left;background:transparent;overflow-wrap:anywhere}
-.delete{background:transparent;color:#c00}
-.preview-area{min-height:480px;display:flex;align-items:center;justify-content:center;padding:15px}
-.screen{width:100%;min-height:350px;background:#ed1824;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;overflow:hidden}
-#displayText{font-size:76px;font-weight:900;color:white;line-height:1.1;white-space:pre-wrap;overflow-wrap:anywhere}
-.screen.scrolling{justify-content:flex-start}
-.screen.scrolling #displayText{width:max-content;max-width:none;white-space:nowrap;animation:marquee 15s linear infinite}
-@keyframes marquee{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
-.room{background:#f3f5f8;border-radius:9px;padding:12px;margin-top:12px}
-.room-code{font-size:24px;font-weight:bold;text-align:center;letter-spacing:3px;padding:12px}
-.status{font-size:12px;color:#777;margin-top:12px}
-@media(max-width:750px){
-.app{grid-template-columns:1fr;padding:10px}
-.preview-area{min-height:230px;order:-1;padding:5px}
-.screen{min-height:220px}
-#displayText{font-size:min(15vw,76px)}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111111">
+
+    <title>Message Screen - Regia</title>
+
+    <style>
+        /* =========================================
+           RESET E STILE GENERALE
+        ========================================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            color: #111;
+        }
+
+        header {
+            background: #111;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* =========================================
+           LAYOUT PRINCIPALE
+        ========================================= */
+
+        .app {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .panel {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px #0001;
+            height: fit-content;
+        }
+
+        h3 {
+            margin: 15px 0 10px;
+        }
+
+        /* =========================================
+           INPUT E TEXTAREA
+        ========================================= */
+
+        textarea,
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font: inherit;
+        }
+
+        textarea {
+            height: 90px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: 2px solid #555;
+            outline-offset: 2px;
+        }
+
+        /* =========================================
+           PULSANTI
+        ========================================= */
+
+        button {
+            cursor: pointer;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px;
+            font-weight: bold;
+        }
+
+        button:focus-visible {
+            outline: 3px solid #777;
+            outline-offset: 3px;
+        }
+
+        .primary {
+            background: #111;
+            color: white;
+        }
+
+        .secondary {
+            background: #eee;
+            color: #111;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .actions button {
+            flex: 1;
+        }
+
+        /* =========================================
+           COLORI
+        ========================================= */
+
+        .colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .color {
+            width: 34px;
+            height: 34px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            padding: 0;
+        }
+
+        .color.active {
+            outline: 3px solid #777;
+            outline-offset: 2px;
+        }
+
+        /* =========================================
+           DIMENSIONE TESTO
+        ========================================= */
+
+        input[type="range"] {
+            width: 100%;
+            margin: 12px 0;
+        }
+
+        /* =========================================
+           MESSAGGI SALVATI
+        ========================================= */
+
+        .saved-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            max-height: 220px;
+            overflow: auto;
+            margin-top: 10px;
+        }
+
+        .saved-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #fff7c2;
+            padding: 6px;
+            border-radius: 5px;
+        }
+
+        .saved-text {
+            flex: 1;
+            text-align: left;
+            background: transparent;
+            overflow-wrap: anywhere;
+        }
+
+        .delete {
+            background: transparent;
+            color: #c00;
+        }
+
+        /* =========================================
+           ANTEPRIMA SCHERMO
+        ========================================= */
+
+        .preview-area {
+            min-height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .screen {
+            width: 100%;
+            min-height: 350px;
+            background: #ed1824;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        #displayText {
+            font-size: 76px;
+            font-weight: 900;
+            color: white;
+            line-height: 1.1;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* =========================================
+           TESTO SCORREVOLE LED
+        ========================================= */
+
+        .screen.scrolling {
+            justify-content: flex-start;
+        }
+
+        .screen.scrolling #displayText {
+            width: max-content;
+            max-width: none;
+            white-space: nowrap;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(100vw);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* =========================================
+           CONNESSIONE STANZA
+        ========================================= */
+
+        .room {
+            background: #f3f5f8;
+            border-radius: 9px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .room-code {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 3px;
+            padding: 12px;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #777;
+            margin-top: 12px;
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN
+        ========================================= */
+
+        @media (max-width: 750px) {
+
+            .app {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .preview-area {
+                min-height: 230px;
+                order: -1;
+                padding: 5px;
+            }
+
+            .screen {
+                min-height: 220px;
+            }
+
+            #displayText {
+                font-size: min(15vw, 76px);
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<header>MESSAGE SCREEN</header>
+    <header>
+        MESSAGE SCREEN
+    </header>
 
-<div class="app">
+    <div class="app">
 
-<section class="panel">
+        <!-- =====================================
+             PANNELLO DI CONTROLLO
+        ====================================== -->
 
-<h3>Scrivi il tuo messaggio</h3>
-<textarea id="messageInput" placeholder="Scrivi qui il tuo messaggio..."></textarea>
+        <section class="panel">
 
-<div class="actions">
-<button class="primary" id="saveBtn">♥ Salva</button>
-<button class="secondary" id="clearBtn">Cancella</button>
-</div>
+            <h3>Scrivi il tuo messaggio</h3>
 
-<h3>Colore dello schermo</h3>
-<div class="colors">
-<button class="color active" data-color="#ed1824" style="background:#ed1824"></button>
-<button class="color" data-color="#000000" style="background:#000"></button>
-<button class="color" data-color="#1565e8" style="background:#1565e8"></button>
-<button class="color" data-color="#ffffff" style="background:#fff"></button>
-<button class="color" data-color="#ffeb3b" style="background:#ffeb3b"></button>
-<button class="color" data-color="#8e24aa" style="background:#8e24aa"></button>
-</div>
+            <textarea
+                id="messageInput"
+                placeholder="Scrivi qui il tuo messaggio..."
+            ></textarea>
 
-<h3>Dimensione testo</h3>
-<input type="range" id="fontSize" min="25" max="150" value="76">
+            <div class="actions">
+                <button class="primary" id="saveBtn">
+                    ♥ Salva
+                </button>
 
-<h3>Movimento del messaggio</h3>
-<label style="display:flex;gap:8px;align-items:center;margin:12px 0">
-<input type="checkbox" id="scrollToggle">
-<strong>Testo scorrevole LED ↔</strong>
-</label>
+                <button class="secondary" id="clearBtn">
+                    Cancella
+                </button>
+            </div>
 
-<h3>Messaggi salvati</h3>
-<div id="savedList" class="saved-list"></div>
+            <!-- COLORI -->
 
-<div class="room">
-<h3 style="margin-top:0">Collega un secondo telefono</h3>
-<p style="font-size:13px">Crea una stanza per condividere la proiezione.</p>
-<button class="primary" id="createRoom" style="width:100%;margin-top:10px">CREA STANZA</button>
+            <h3>Colore dello schermo</h3>
 
-<div id="roomInfo" hidden>
-<div class="room-code" id="roomCode"></div>
-<p style="font-size:12px;text-align:center">Codice da inserire sul secondo telefono</p>
-<button class="secondary" id="copyCode" style="width:100%;margin-top:8px">COPIA CODICE</button>
-<button class="primary" id="copyLink" style="width:100%;margin-top:8px">COPIA LINK PROIEZIONE</button>
-</div>
+            <div class="colors">
 
-<h3>Oppure entra in una stanza</h3>
-<input type="text" id="joinCode" placeholder="Inserisci il codice">
-<button class="secondary" id="joinRoom" style="width:100%;margin-top:8px">COLLEGA</button>
-</div>
+                <button
+                    class="color active"
+                    data-color="#ed1824"
+                    style="background:#ed1824"
+                    aria-label="Rosso"
+                ></button>
 
-<div class="actions">
-<button class="primary" id="showBtn">⛶ MOSTRA SULLO SCHERMO</button>
-</div>
+                <button
+                    class="color"
+                    data-color="#000000"
+                    style="background:#000000"
+                    aria-label="Nero"
+                ></button>
 
-<p class="status" id="status">Inizializzazione...</p>
-</section>
+                <button
+                    class="color"
+                    data-color="#1565e8"
+                    style="background:#1565e8"
+                    aria-label="Blu"
+                ></button>
 
-<section class="preview-area">
-<div class="screen" id="screen">
-<div id="displayText">hello</div>
-</div>
-</section>
+                <button
+                    class="color"
+                    data-color="#ffffff"
+                    style="background:#ffffff"
+                    aria-label="Bianco"
+                ></button>
 
-</div>
+                <button
+                    class="color"
+                    data-color="#ffeb3b"
+                    style="background:#ffeb3b"
+                    aria-label="Giallo"
+                ></button>
 
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-<script src="./firebase-config.js"></script>
-<script src="./app.js"></script>
+                <button
+                    class="color"
+                    data-color="#8e24aa"
+                    style="background:#8e24aa"
+                    aria-label="Viola"
+                ></button>
+
+            </div>
+
+            <!-- DIMENSIONE TESTO -->
+
+            <h3>Dimensione testo</h3>
+
+            <input
+                type="range"
+                id="fontSize"
+                min="25"
+                max="150"
+                value="76"
+            >
+
+            <!-- MOVIMENTO -->
+
+            <h3>Movimento del messaggio</h3>
+
+            <label style="display:flex;gap:8px;align-items:center;margin:12px 0">
+
+                <input
+                    type="checkbox"
+                    id="scrollToggle"
+                >
+
+                <strong>Testo scorrevole LED ↔</strong>
+
+            </label>
+
+            <!-- MESSAGGI SALVATI -->
+
+            <h3>Messaggi salvati</h3>
+
+            <div
+                id="savedList"
+                class="saved-list"
+            ></div>
+
+            <!-- =================================
+                 GESTIONE STANZE FIREBASE
+            ================================== -->
+
+            <div class="room">
+
+                <h3 style="margin-top:0">
+                    Collega un secondo telefono
+                </h3>
+
+                <p style="font-size:13px">
+                    Crea una stanza per condividere la proiezione.
+                </p>
+
+                <button
+                    class="primary"
+                    id="createRoom"
+                    style="width:100%;margin-top:10px"
+                >
+                    CREA STANZA
+                </button>
+
+                <div id="roomInfo" hidden>
+
+                    <div
+                        class="room-code"
+                        id="roomCode"
+                    ></div>
+
+                    <p style="font-size:12px;text-align:center">
+                        Codice da inserire sul secondo telefono
+                    </p>
+
+                    <button
+                        class="secondary"
+                        id="copyCode"
+                        style="width:100%;margin-top:8px"
+                    >
+                        COPIA CODICE
+                    </button>
+
+                    <button
+                        class="primary"
+                        id="copyLink"
+                        style="width:100%;margin-top:8px"
+                    >
+                        COPIA LINK PROIEZIONE
+                    </button>
+
+                </div>
+
+                <h3>Oppure entra in una stanza</h3>
+
+                <input
+                    type="text"
+                    id="joinCode"
+                    placeholder="Inserisci il codice"
+                    autocomplete="off"
+                >
+
+                <button
+                    class="secondary"
+                    id="joinRoom"
+                    style="width:100%;margin-top:8px"
+                >
+                    COLLEGA
+                </button>
+
+            </div>
+
+            <!-- MOSTRA SCHERMO -->
+
+            <div class="actions">
+
+                <button
+                    class="primary"
+                    id="showBtn"
+                >
+                    ⛶ MOSTRA SULLO SCHERMO
+                </button>
+
+            </div>
+
+            <!-- STATO APPLICAZIONE -->
+
+            <p
+                class="status"
+                id="status"
+                role="status"
+                aria-live="polite"
+            >
+                Inizializzazione...
+            </p>
+
+        </section>
+
+        <!-- =====================================
+             ANTEPRIMA MESSAGGIO
+        ====================================== -->
+
+        <section class="preview-area">
+
+            <div
+                class="screen"
+                id="screen"
+            >
+
+                <div id="displayText">
+                    hello
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- =========================================
+         FIREBASE SDK
+         L'ORDINE È IMPORTANTE:
+         1. Firebase App
+         2. Firebase Auth
+         3. Firebase Database
+         4. Configurazione progetto
+         5. Applicazione
+    ========================================= -->
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
+    <!-- Configurazione Firebase -->
+
+    <script src="./firebase-config.js"></script>
+
+    <!-- Logica applicazione -->
+
+    <script src="./app.js"></script>
+
 </body>
 </html>
